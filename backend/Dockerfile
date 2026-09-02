@@ -3,6 +3,7 @@ FROM python:3.11-slim
 # --- system deps ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates \
+    libgraphite2-3 libharfbuzz0b libfontconfig1 libssl3 libicu72 zlib1g \
     && rm -rf /var/lib/apt/lists/*
 
 # --- Tectonic (self-contained LaTeX engine, no full TeX Live needed) ---
