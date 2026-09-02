@@ -1,0 +1,151 @@
+\documentclass[letterpaper,10pt]{article}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{iftex}
+\ifPDFTeX
+  % \pdfglyphtounicode/\pdfgentounicode are pdfTeX-only primitives (they
+  % make copy-pasted PDF text more reliable). Tectonic compiles via XeTeX,
+  % which doesn't have them, so this whole block is skipped there instead
+  % of throwing "Undefined control sequence".
+  \input{glyphtounicode}
+  \pdfgentounicode=1
+\fi
+\usepackage{setspace}
+\setstretch{0.97}
+\usepackage{xcolor}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\definecolor{darkblue}{RGB}{0, 61, 123}
+\titleformat{\section}{
+  \vspace{-8pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
+\renewcommand\labelitemii{$\vcenter{\hbox{\small$\blacktriangleright$}}$}
+\usepackage[sfdefault]{FiraSans}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\footskip}{14pt}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.6in}
+\addtolength{\textwidth}{1.2in}
+\addtolength{\topmargin}{-0.6in}
+\addtolength{\textheight}{1.15in}
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-1pt}}
+  }
+}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}
+    \vspace{2pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}
+    \vspace{2pt}
+}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.05in, label={}, itemsep=0pt, parsep=0pt]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{
+  \begin{itemize}[leftmargin=0.15in, itemsep=1pt, topsep=1pt, parsep=0pt]
+}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2pt}}
+\begin{document}
+\begin{center}
+    \textbf{\Huge \scshape Sivashankar Selvan} \\ \vspace{1pt}
+    \small
+    \href{tel:+919385886782}{\textbf{\faPhone} +91 9245536926} $|$
+    \href{mailto:sivashankarselvan@gmail.com}{\textbf{\faEnvelope} sivashankarselvan@gmail.com} $|$
+    \href{https://www.linkedin.com/in/sivashankarselvan/}{\textbf{\faLinkedin} LinkedIn} $|$
+    \href{https://github.com/Sivashankar-Selvan}{\textbf{\faGithub} GitHub} $|$
+    \href{https://sivashankar-selvan.github.io/portfolio/}{\textbf{\faGlobe} Portfolio} \\[1pt]
+\end{center}
+\section{Summary}
+\resumeSubHeadingListStart
+    \resumeItem{\textbf{Full Stack Developer} with \textbf{2 years} of experience building enterprise \textbf{REST APIs} and frontend systems using \textbf{Java}, \textbf{Spring Boot}, \textbf{Angular}, and \textbf{AWS}. Hands-on experience with \textbf{microservices architecture} using \textbf{Apache Kafka}, \textbf{Spring Cloud Gateway}, \textbf{Netflix Eureka} service discovery, and \textbf{Resilience4j} circuit breakers. Proficient in \textbf{REST API design}, \textbf{JWT authentication}, \textbf{Docker} containerization, and \textbf{Angular} frontend development. \href{https://leetcode.com/u/SIVASHANKARcc/}{\textbf{LeetCode 1500+}} rating $|$ \textbf{HackerRank 5-Star Python} $|$ \textbf{130+ consecutive days} of daily coding challenges posted on \textbf{LinkedIn}.}
+\resumeSubHeadingListEnd
+\section{Experience}
+\resumeSubHeadingListStart
+\resumeSubheading
+  {Full Stack Developer}{Aug 2024 -- Present}
+  {Intellect Design Arena}{Chennai, India}
+  \resumeItemListStart
+    \resumeItem{Built a \textbf{full-stack} migration toolset (\textbf{Spring Boot} + \textbf{Angular}) integrating \textbf{8+ migration utilities} for transitioning enterprise banking clients from legacy Message Hub to the iTurmeric low-code platform, reducing migration time by \textbf{50\%}.}
+
+    \resumeItem{Delivered a full-stack diff comparison module by integrating Spring Boot GitEngine APIs with an Angular diff viewer, improving validation efficiency by \textbf{30\%}.}
+
+    \resumeItem{Architected a scalable metadata-driven configuration management and template-driven module in Angular for Environment and Profile setup workflows. Implemented complex bidirectional \textbf{XML-to-JSON} transformation algorithms with intelligent fallback logic.}
+
+    \resumeItem{Delivered \textbf{10+ feature enhancements} including ORM query extensions, Angular UI components (chips, date pickers), and cross-database compatibility improvements for PostgreSQL and Oracle.}
+
+    \resumeItem{Contributed to an enterprise modular monolith (\textbf{Java 17}, \textbf{Jakarta EE 10}, \textbf{JBoss EAP 8.0}) with \textbf{20+ domain-driven modules} and OliveFabric Runtime engine handling REST API lifecycle management, dynamic routing, and multi-format message processing (JSON, XML, SWIFT, ISO 8583).}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+\section{Technical Skills}
+\resumeSubHeadingListStart
+  \resumeItem{
+    \textbf{Languages}{: Java, Python, SQL, JavaScript, TypeScript} \\
+    \textbf{Frameworks}{: Spring Boot, Angular 15+, Hibernate, Bootstrap} \\
+    \textbf{Backend}{: REST APIs, Microservices, Spring Security, JWT, Kafka, Eureka, API Gateway} \\
+    \textbf{Cloud \& DevOps}{: AWS (EC2, S3, RDS, EB), Docker} \\
+    \textbf{DB}{: MySQL, PostgreSQL, Oracle} \\
+    \textbf{Platforms \& Tools}{: Leetcode, GeeksforGeeks, Git, GitHub, IntelliJ, VS Code, Postman, JUnit, Mockito, Maven, Gradle} \\
+    \textbf{Concepts}{: DSA, OOP, DBMS, System Design}
+  }
+\resumeSubHeadingListEnd
+\section{AI \& Productivity Tools}
+\resumeItemListStart
+    \resumeItem{Adopted \textbf{AIDLC} (AI-Driven Development Lifecycle) practices using \textbf{Claude Co-work} and custom \textbf{Agent Skill Files (SKILL.md)} to automate metadata schema generation (.orm, .oum, .flow), accelerating prompt-to-deployment workflows.}
+
+    \resumeItem{Leveraged AI-assisted development tools (ChatGPT, GitHub Copilot, Cursor) for \textbf{prompt engineering}, rapid code generation, automated boilerplate testing, and catching edge-case bugs early in the development cycle.}
+\resumeItemListEnd
+\section{Projects}
+\resumeSubHeadingListStart
+\resumeProjectHeading
+{
+  \textbf{Job Application Tracker -- Microservices Backend}
+  $|$ \emph{Java 21, Spring Boot 3.2, Kafka, Docker, JWT}
+  \quad
+  \href{https://github.com/sivashankar-selvan/Job-tracker-microservices}{\faGithub \ github}
+}{}
+\resumeItemListStart
+    \resumeItem{Architected a production-grade \textbf{microservices backend} using Spring Boot 3, \textbf{Spring Cloud Netflix Eureka}, \textbf{API Gateway}, \textbf{Resilience4j} circuit breakers, and \textbf{Apache Kafka} for asynchronous event-driven communication.}
+    \resumeItem{Engineered a \textbf{User Service} with \textbf{JWT} stateless authentication and \textbf{BCrypt} password hashing, along with a \textbf{Job Service} implementing a finite state machine for application lifecycle management and complete audit trail persistence.}
+    \resumeItem{Implemented Kafka producer-consumer architecture with dedicated topics, partitioned event routing, and a Notification Service delivering automated email notifications via JavaMailSender while remaining fully decoupled from business logic.}
+    \resumeItem{Containerized all services using \textbf{Docker} multi-stage builds and orchestrated them with \textbf{Docker Compose} using isolated MySQL and PostgreSQL databases per service following the \textbf{Database-per-Service} pattern.}
+\resumeItemListEnd
+\resumeSubHeadingListEnd
+\section{Achievements}
+\resumeItemListStart
+    \resumeItem{Received the \textbf{Spotlight Award} at Intellect Design Arena Ltd for developing a reusable Tree Compare Solution. \href{https://www.linkedin.com/posts/sivashankarselvan_happy-to-share-that-i-received-a-spotlight-ugcPost-7460388656839729152-rKVD/}{[LinkedIn Post]}}
+    \resumeItem{\href{https://leetcode.com/u/SIVASHANKARcc/}{\textbf{LeetCode Rating: 1500+}} -- \textbf{HackerRank: 5-Star Python} Badge \href{https://leetcode.com/u/SIVASHANKARcc/}{[Leetcode Profile]}}
+    \resumeItem{Earned the \textbf{AWS Certified Cloud Practitioner} certification. \href{https://drive.google.com/file/d/1suJE58zjDxi0Wdu9cJmvIh9nnjNPofn1/view}{[Certificate]}}
+\resumeItemListEnd
+\section{Education}
+\resumeSubHeadingListStart
+\resumeSubheading
+  {Amrita Vishwa Vidyapeetham}{2020 -- 2024}
+  {Bachelor of Technology in Computer and Communication Engineering}{Coimbatore, India}
+\resumeSubHeadingListEnd
+\end{document}
