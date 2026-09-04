@@ -90,10 +90,23 @@ export default function ResumePanel({
           />
         ) : pdfUrl ? (
           <object data={pdfUrl} type="application/pdf" className="h-full w-full">
-            <p className="p-4 text-sm text-gray-500 dark:text-gray-400">
-              PDF preview isn't supported here — use "Download .tex" and compile
-              locally, or switch to the Source tab.
-            </p>
+            {/* Shown when the browser can't render a PDF inline via <object>
+                (most mobile browsers) -- opening the same blob URL directly
+                in a new tab works reliably there instead, since it hands off
+                to the phone's native/system PDF viewer. */}
+            <div className="flex h-full flex-col items-center justify-center gap-3 p-4 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Inline PDF preview isn't supported in this browser.
+              </p>
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                Open PDF
+              </a>
+            </div>
           </object>
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-gray-500">
