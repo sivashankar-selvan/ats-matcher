@@ -46,6 +46,27 @@ export async function rewriteBullet(bullet: string, keywords: string[]): Promise
   return data.rewritten as string;
 }
 
+export async function saveApplication(
+  tex: string,
+  company: string,
+  role: string,
+  jdText: string,
+  score: number
+): Promise<string> {
+  const res = await fetch(`${API_BASE}/api/save-application`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tex, company, role, jd_text: jdText, score }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const message = typeof err.detail === "object" ? err.detail.message : err.detail;
+    throw new Error(message || "Saving to Notion failed.");
+  }
+  const data = await res.json();
+  return data.notion_url as string;
+}
+
 export async function compileResume(tex: string): Promise<Blob> {
   const res = await fetch(`${API_BASE}/api/compile`, {
     method: "POST",

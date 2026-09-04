@@ -11,6 +11,11 @@ from pydantic import BaseModel
 
 from keyword_matcher import analyze, category_of
 from latex_compiler import compile_tex_to_pdf, LatexCompileError
+from notion_client import (
+    save_application as save_application_to_notion,
+    is_configured as notion_is_configured,
+    NotionError,
+)
 
 # Load backend/.env (GEMINI_API_KEY, FRONTEND_ORIGIN, etc.) into the process
 # environment. Without this, values in .env are silently ignored and
@@ -56,6 +61,14 @@ class CompileRequest(BaseModel):
 class RewriteRequest(BaseModel):
     bullet: str
     keywords: list[str] = []
+
+
+class SaveApplicationRequest(BaseModel):
+    tex: str
+    company: str
+    role: str
+    jd_text: str
+    score: float
 
 
 @app.get("/api/default-resume")
@@ -174,6 +187,45 @@ def _clean_rewrite_output(text: str) -> str:
     cleaned = re.sub(r"(?<!\w)\*(.*?)\*(?!\w)", r"\1", cleaned)
     cleaned = cleaned.strip().strip('"').strip("'")
     return cleaned or text.strip()
+
+
+@app.post("/api/save-application")
+def save_application(req: SaveApplicationRequest) -> dict:
+    """
+    Optional job-application tracker: compiles the resume as submitted and
+    logs it -- PDF, company, role, match score, and the full JD text -- as a
+    new row in a Notion database. Requires NOTION_API_KEY and
+    NOTION_DATABASE_ID; returns 501 otherwise so the rest of the app keeps
+    working with zero Notion setup.
+    """
+    if not notion_is_configured():
+        raise HTTPException(
+            status_code=501,
+            detail=(
+                "Notion tracker is not configured. Set NOTION_API_KEY and "
+                "NOTION_DATABASE_ID to enable it."
+            ),
+        )
+    if not req.company.strip() or not req.role.strip():
+        raise HTTPException(status_code=400, detail="Company and role are required.")
+
+    try:
+        pdf_bytes = compile_tex_to_pdf(req.tex)
+    except LatexCompileError as exc:
+        raise HTTPException(status_code=422, detail={"message": str(exc), "log": exc.log[-4000:]})
+
+    try:
+        notion_url = save_application_to_notion(
+            company=req.company.strip(),
+            role=req.role.strip(),
+            score=req.score,
+            jd_text=req.jd_text,
+            pdf_bytes=pdf_bytes,
+        )
+    except NotionError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+    return {"notion_url": notion_url}
 
 
 @app.get("/api/health")

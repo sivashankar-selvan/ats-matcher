@@ -1,4 +1,5 @@
-import { AnalyzeResult, KeywordItem } from "../api";
+import { useState } from "react";
+import { AnalyzeResult, KeywordItem, saveApplication } from "../api";
 import ExperienceRewriter from "./ExperienceRewriter";
 
 interface Props {
@@ -28,6 +29,27 @@ export default function JDPanel({
   resumeTex,
   onApplyBulletRewrite,
 }: Props) {
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedUrl, setSavedUrl] = useState<string | null>(null);
+
+  async function handleSaveToNotion() {
+    if (!result) return;
+    setSaving(true);
+    setSaveError(null);
+    setSavedUrl(null);
+    try {
+      const url = await saveApplication(resumeTex, company, role, jdText, result.score);
+      setSavedUrl(url);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Saving to Notion failed.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="flex h-full flex-col gap-3 p-4">
       <div>
@@ -140,6 +162,76 @@ export default function JDPanel({
             keywords={[...result.matched, ...result.missing].map((k) => k.keyword)}
             onApply={onApplyBulletRewrite}
           />
+
+          <div className="flex flex-col gap-2 border-t border-gray-200 pt-3 dark:border-gray-700">
+            <div>
+              <h3 className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+                Save this application (optional)
+              </h3>
+              <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                Compiles the resume as it stands right now and logs it -- PDF,
+                company, role, match score, and the full JD text -- as a new
+                row in your Notion tracker.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                className="flex-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+                placeholder="Company"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+              />
+              <input
+                className="flex-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+                placeholder="Role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={handleSaveToNotion}
+              disabled={saving || !company.trim() || !role.trim()}
+              className="self-start rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
+            >
+              {saving ? "Saving..." : "Save to Notion"}
+            </button>
+            {saveError && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {saveError}
+                {saveError.toLowerCase().includes("not configured") && (
+                  <>
+                    {" "}
+                    — add{" "}
+                    <code className="rounded bg-gray-100 px-1 dark:bg-gray-700">
+                      NOTION_API_KEY
+                    </code>{" "}
+                    and{" "}
+                    <code className="rounded bg-gray-100 px-1 dark:bg-gray-700">
+                      NOTION_DATABASE_ID
+                    </code>{" "}
+                    to{" "}
+                    <code className="rounded bg-gray-100 px-1 dark:bg-gray-700">
+                      backend/.env
+                    </code>{" "}
+                    and restart the backend.
+                  </>
+                )}
+              </p>
+            )}
+            {savedUrl && (
+              <p className="text-sm text-green-700 dark:text-green-400">
+                Saved ✓ —{" "}
+                <a
+                  href={savedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  view in Notion
+                </a>
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
