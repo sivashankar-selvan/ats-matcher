@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#2563eb"/>
+  <!-- resume/document -->
+  <rect x="16" y="10" width="26" height="34" rx="3" fill="#ffffff"/>
+  <rect x="21" y="17" width="16" height="3" rx="1.5" fill="#93c5fd"/>
+  <rect x="21" y="24" width="16" height="3" rx="1.5" fill="#93c5fd"/>
+  <rect x="21" y="31" width="10" height="3" rx="1.5" fill="#93c5fd"/>
+  <!-- match checkmark badge -->
+  <circle cx="44" cy="44" r="14" fill="#16a34a" stroke="#2563eb" stroke-width="3"/>
+  <path d="M38 44.5l4 4 8-8.5" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
