@@ -46,6 +46,21 @@ export async function rewriteBullet(bullet: string, keywords: string[]): Promise
   return data.rewritten as string;
 }
 
+export interface JobInfo {
+  company: string;
+  role: string;
+}
+
+export async function extractJobInfo(jdText: string): Promise<JobInfo> {
+  const res = await fetch(`${API_BASE}/api/extract-job-info`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ jd_text: jdText }),
+  });
+  if (!res.ok) throw new Error("Could not auto-detect company/role.");
+  return res.json();
+}
+
 export async function saveApplication(
   tex: string,
   company: string,

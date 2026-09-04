@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import base64
 from pathlib import Path
 
@@ -69,6 +70,10 @@ class SaveApplicationRequest(BaseModel):
     role: str
     jd_text: str
     score: float
+
+
+class ExtractJobInfoRequest(BaseModel):
+    jd_text: str
 
 
 @app.get("/api/default-resume")
@@ -187,6 +192,53 @@ def _clean_rewrite_output(text: str) -> str:
     cleaned = re.sub(r"(?<!\w)\*(.*?)\*(?!\w)", r"\1", cleaned)
     cleaned = cleaned.strip().strip('"').strip("'")
     return cleaned or text.strip()
+
+
+@app.post("/api/extract-job-info")
+def extract_job_info(req: ExtractJobInfoRequest) -> dict:
+    """
+    Best-effort auto-fill for the "Save to Notion" Company/Role fields: asks
+    Gemini to pull the hiring company's name and the job title out of the
+    pasted JD text. Purely a convenience on top of the same GEMINI_API_KEY
+    already used for /api/rewrite -- no separate setup. Always returns
+    (possibly blank) strings rather than an error, since worst case the
+    fields just stay manually editable.
+    """
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key or not req.jd_text.strip():
+        return {"company": "", "role": ""}
+
+    import httpx
+
+    model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
+    prompt = (
+        "Extract the hiring company's name and the job title from this job "
+        "description. Respond with ONLY a JSON object like "
+        '{"company": "...", "role": "..."} and nothing else -- no markdown '
+        "code fences, no explanation. If either isn't clearly stated, use an "
+        "empty string for that field.\n\n"
+        f"Job description:\n{req.jd_text[:6000]}"
+    )
+    try:
+        resp = httpx.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            params={"key": api_key},
+            json={"contents": [{"parts": [{"text": prompt}]}]},
+            timeout=15.0,
+        )
+        resp.raise_for_status()
+        text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+        cleaned = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
+        data = json.loads(cleaned)
+        return {
+            "company": str(data.get("company") or "").strip(),
+            "role": str(data.get("role") or "").strip(),
+        }
+    except Exception:
+        # Best-effort only -- any failure (bad JSON, rate limit, timeout)
+        # just means the fields stay blank for manual entry, not an error
+        # the user has to deal with.
+        return {"company": "", "role": ""}
 
 
 @app.post("/api/save-application")

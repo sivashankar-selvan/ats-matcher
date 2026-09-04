@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AnalyzeResult, KeywordItem, saveApplication } from "../api";
+import { AnalyzeResult, KeywordItem, extractJobInfo, saveApplication } from "../api";
 import ExperienceRewriter from "./ExperienceRewriter";
 
 interface Props {
@@ -31,9 +31,30 @@ export default function JDPanel({
 }: Props) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+  const [extracting, setExtracting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedUrl, setSavedUrl] = useState<string | null>(null);
+
+  async function handleAnalyzeClick() {
+    onAnalyze();
+    // Best-effort auto-fill of Company/Role from the JD text via Gemini --
+    // runs alongside the main analyze call, never blocks or errors it out.
+    // Only overwrites blank fields, so it won't clobber anything you've
+    // already typed (e.g. if you're re-analyzing a tweaked JD).
+    if (!company.trim() && !role.trim() && jdText.trim()) {
+      setExtracting(true);
+      try {
+        const info = await extractJobInfo(jdText);
+        if (info.company) setCompany(info.company);
+        if (info.role) setRole(info.role);
+      } catch {
+        // Silent -- manual entry in the fields below still works fine.
+      } finally {
+        setExtracting(false);
+      }
+    }
+  }
 
   async function handleSaveToNotion() {
     if (!result) return;
@@ -65,7 +86,7 @@ export default function JDPanel({
       />
 
       <button
-        onClick={onAnalyze}
+        onClick={handleAnalyzeClick}
         disabled={analyzing || !jdText.trim()}
         className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
       >
@@ -177,17 +198,22 @@ export default function JDPanel({
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 className="flex-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
-                placeholder="Company"
+                placeholder={extracting ? "Detecting..." : "Company"}
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
               />
               <input
                 className="flex-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
-                placeholder="Role"
+                placeholder={extracting ? "Detecting..." : "Role"}
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               />
             </div>
+            {extracting && (
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                Auto-detecting company &amp; role from the JD...
+              </p>
+            )}
             <button
               onClick={handleSaveToNotion}
               disabled={saving || !company.trim() || !role.trim()}
